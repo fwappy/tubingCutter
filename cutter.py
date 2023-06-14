@@ -5,7 +5,7 @@
 # 14 Jun 2023
 ##################################################
 
-
+import time
 from PyQt5 import QtCore, QtWidgets, QtSerialPort, uic
 
 class Cutter(QtWidgets.QWidget):
@@ -13,32 +13,33 @@ class Cutter(QtWidgets.QWidget):
         super(Cutter, self).__init__(parent) # Call the inherited classes __init__ method
         uic.loadUi('cutter.ui', self) # Load the .ui file
         self.show() # Show the GUI
-        self.cutButton.clicked.connect(self.cut)
+        self.cutButton.clicked.connect(self.cut) #connect buttons
         self.resetButton.clicked.connect(self.reset)
-        self.serial = QtSerialPort.QSerialPort(
+        self.serial = QtSerialPort.QSerialPort( #connect serial
             '/dev/ttyUSB0',
             baudRate=QtSerialPort.QSerialPort.Baud9600,
             readyRead=self.receive
         )
 
-
+    @QtCore.pyqtSlot()
     def cut(self): #make this non blocking + catch no cnnection error and display in red to consoleTextbox
         self.cutButton.setEnabled(False)
-        time.sleep(1) #replace with wait till end of message - allow reset button to break
-        self.send(self.length.text().encode())
-        self.consoleTextbox.append(self.length.text())
-        time.sleep(1) #replace with wait till end of message - allow reset button to break
-        self.send(self.cuts.text().encode())
-        self.consoleTextbox.append(self.cuts.text())
-        #wait until read "complete!"
+        if self.serial.isOpen():
+            #replace with wait till end of message - allow reset button to break
+            self.serial.write(self.length.text().encode())
+            self.consoleTextbox.append(self.length.text())
+            time.sleep(1) #replace with wait till end of message - allow reset button to break
+            self.serial.write(self.cuts.text().encode())
+            self.consoleTextbox.append(self.cuts.text())
+            #wait until read "complete!"
+        else:
+            self.consoleTextbox.append("Error: No serial connection to cutter") #make red
+        self.cutButton.setChecked(False)
         self.cutButton.setEnabled(True)
 
-
+    @QtCore.pyqtSlot()
     def reset(self):
-        self.send("\x03")
-
-    def send(self, message):
-        self.serial.write(message)
+        self.serial.write(b'\x03')
 
     #future: add reset cuts on blade + rest of info section
 
