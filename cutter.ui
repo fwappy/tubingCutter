@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>697</width>
-    <height>210</height>
+    <width>746</width>
+    <height>391</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,6 +70,9 @@
        <property name="suffix">
         <string/>
        </property>
+       <property name="maximum">
+        <number>1000000</number>
+       </property>
       </widget>
      </item>
      <item>
@@ -113,6 +116,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
       </widget>
      </item>
      <item>
@@ -152,6 +158,9 @@
        </property>
        <property name="suffix">
         <string/>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
        </property>
       </widget>
      </item>

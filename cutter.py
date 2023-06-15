@@ -25,7 +25,6 @@ class Cutter(QtWidgets.QWidget):
         )
         self.serial.errorOccurred.connect(self.showError)     #connect errors
         self.reset()
-        self.getMotorVars()
 
     @QtCore.pyqtSlot()
     def cut(self): #make this non blocking + catch no cnnection error and display in red to consoleTextbox
@@ -34,7 +33,6 @@ class Cutter(QtWidgets.QWidget):
         time.sleep(1) #replace with wait till end of message - allow reset button to break
         self.send(self.cuts.text())
         #wait until read "complete!"
-        self.getMotorVars()
         self.cutButton.setChecked(False)
         self.cutButton.setEnabled(True)
 
@@ -55,25 +53,16 @@ class Cutter(QtWidgets.QWidget):
 
     def receive(self):
         while self.serial.canReadLine():
-            text = self.serial.readLine().data().decode()
-            self.consoleTextbox.append(text)
-
-    def waitforText(self, text): #fix blocking
-        while True:
-            text = self.serial.readLine().data().decode()
-            if text == "complete!":
-                break
+            self.consoleTextbox.append(self.serial.readLine().data().decode())
+            #parse for string "Total cuts using current blade is : 4; Total tube length cut in cm is    : 100" then uncheck eand enable cutButton + set Info section of UI
 
     def updateTotal(self): #updates the total LCDNumber
         self.total.display(self.length.value() * self.cuts.value())
 
     def setMotorVars(self):
-        #self.send(b'figurethisout\r')
-        print("setMotorVars Not Implemented")
-
-    def getMotorVars(self):
-        #self.send(b'figurethisout\r')
-        print("getMotorVars not Implemented")
+        self.send('R2 = ' + self.rollLength.text())
+        time.sleep(1)
+        self.send('R1 = ' + self.blade.text())
 
     def showError(self):
         if self.serial.error() != self.serial.NoError:
