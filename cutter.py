@@ -23,7 +23,7 @@ class Cutter(QtWidgets.QWidget):
             baudRate=QtSerialPort.QSerialPort.Baud9600,
             readyRead=self.receive
         )
-        self.serial.errorOccurred.connect(self.err)     #connect errors
+        self.serial.errorOccurred.connect(self.showError)     #connect errors
         self.reset()
         self.getMotorVars()
 
@@ -40,14 +40,11 @@ class Cutter(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot()
     def reset(self):
-        if self.serial.isOpen(): #add other error handling (for example disconnected while open)
-            self.serial.write(b'\x03')
-        else:
-            self.serial.open(QtCore.QIODevice.ReadWrite)
-            if self.serial.isOpen():
-                self.serial.write(b'\x03')
-            else:
-                self.consoleTextbox.append('<font color="red">Error: No serial adapter<\font>')
+        if self.serial.isOpen():
+            self.serial.close()
+        self.serial.open(QtCore.QIODevice.ReadWrite)
+        if self.serial.isOpen():
+            self.serial.write(b'\x03') #send ctrl-c
 
     #future: add reset cuts on blade + rest of info section
 
@@ -78,10 +75,9 @@ class Cutter(QtWidgets.QWidget):
         #self.send(b'figurethisout\r')
         print("getMotorVars not Implemented")
 
-    def err(self, e):
-        print(e)
+    def showError(self):
         if self.serial.error() != self.serial.NoError:
-            self.consoleTextbox.append(repr(self.serial.error()))
+            self.consoleTextbox.append('<font color="red">' + self.serial.errorString() + '<\font>')
 
 
 if __name__ == '__main__':
