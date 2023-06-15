@@ -23,7 +23,9 @@ class Cutter(QtWidgets.QWidget):
             baudRate=QtSerialPort.QSerialPort.Baud9600,
             readyRead=self.receive
         )
+        self.serial.errorOccurred.connect(self.err)     #connect errors
         self.reset()
+        self.getMotorVars()
 
     @QtCore.pyqtSlot()
     def cut(self): #make this non blocking + catch no cnnection error and display in red to consoleTextbox
@@ -32,6 +34,7 @@ class Cutter(QtWidgets.QWidget):
         time.sleep(1) #replace with wait till end of message - allow reset button to break
         self.send(self.cuts.text())
         #wait until read "complete!"
+        self.getMotorVars()
         self.cutButton.setChecked(False)
         self.cutButton.setEnabled(True)
 
@@ -44,7 +47,7 @@ class Cutter(QtWidgets.QWidget):
             if self.serial.isOpen():
                 self.serial.write(b'\x03')
             else:
-                self.consoleTextbox.append("Error: No serial adapter") #make red
+                self.consoleTextbox.append('<font color="red">Error: No serial adapter<\font>')
 
     #future: add reset cuts on blade + rest of info section
 
@@ -53,20 +56,33 @@ class Cutter(QtWidgets.QWidget):
         self.serial.write(b'\r') #send newline
         self.serial.waitForBytesWritten() # blocking
 
-    @QtCore.pyqtSlot()
     def receive(self):
         while self.serial.canReadLine():
             text = self.serial.readLine().data().decode()
             self.consoleTextbox.append(text)
 
-    @QtCore.pyqtSlot()
+    def waitforText(self, text): #fix blocking
+        while True:
+            text = self.serial.readLine().data().decode()
+            if text == "complete!":
+                break
+
     def updateTotal(self): #updates the total LCDNumber
         self.total.display(self.length.value() * self.cuts.value())
 
-    @QtCore.pyqtSlot()
     def setMotorVars(self):
         #self.send(b'figurethisout\r')
-        print("Not Implemented")
+        print("setMotorVars Not Implemented")
+
+    def getMotorVars(self):
+        #self.send(b'figurethisout\r')
+        print("getMotorVars not Implemented")
+
+    def err(self, e):
+        print(e)
+        if self.serial.error() != self.serial.NoError:
+            self.consoleTextbox.append(repr(self.serial.error()))
+
 
 if __name__ == '__main__':
     import sys

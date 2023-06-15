@@ -52,7 +52,7 @@
      <item>
       <widget class="QLabel" name="rollLabel">
        <property name="text">
-        <string>Roll Remaining:</string>
+        <string>Length Used:</string>
        </property>
        <property name="buddy">
         <cstring>rollLength</cstring>
@@ -75,7 +75,7 @@
      <item>
       <widget class="QLabel" name="rollUnits">
        <property name="text">
-        <string>m</string>
+        <string>cm</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
