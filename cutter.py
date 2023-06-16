@@ -50,6 +50,7 @@ class Cutter(QtWidgets.QWidget):
 
     def receive(self):
         bladePattern = re.compile("Total cuts using current blade is: ")
+        bladePattern2 = re.compile("Total cuts using current blade is : ")
         rollLengthPattern = re.compile("Total tube length cut in CM is   : ")
         readyPattern = re.compile("Please enter tube length to cut in MM")
         while self.serial.canReadLine():
@@ -60,8 +61,10 @@ class Cutter(QtWidgets.QWidget):
             #print('blade:' + text.split("Total cuts using current blade is: ",1)[0])
 
 
-            if bladePattern.match(text):
-                self.blade.setValue(int(text.split("Total cuts using current blade is: ",1)[1]))        #set Info section of UI
+            if bladePattern.match(text):                                                            #set Info section of UI
+                self.blade.setValue(int(text.split("Total cuts using current blade is: ",1)[1]))    
+            if bladePattern2.match(text):                                                            #shitty workaround for extra space
+                self.blade.setValue(int(text.split("Total cuts using current blade is : ",1)[1]))
             if rollLengthPattern.match(text):
                 self.rollLength.setValue(int(text.split("Total tube length cut in CM is   : ",1)[1]))
             
