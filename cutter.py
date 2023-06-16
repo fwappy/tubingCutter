@@ -12,7 +12,7 @@ class Cutter(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(Cutter, self).__init__(parent)            # Call the inherited classes __init__ method
         uic.loadUi('cutter.ui', self)                   # Load the .ui file
-        self.show() # Show the GUI
+        self.show()                                     # Show the GUI
         self.cutButton.clicked.connect(self.cut)        # connect buttons
         self.resetButton.clicked.connect(self.reset)
         self.length.valueChanged.connect(self.updateTotal)
@@ -27,7 +27,7 @@ class Cutter(QtWidgets.QWidget):
         self.reset()
 
     @QtCore.pyqtSlot()
-    def cut(self): #make this non blocking + catch no cnnection error and display in red to consoleTextbox
+    def cut(self):
         self.cutButton.setEnabled(False)
         self.send(self.length.text())
         time.sleep(1) #replace with wait till end of message - allow reset button to break
@@ -40,8 +40,6 @@ class Cutter(QtWidgets.QWidget):
         self.serial.open(QtCore.QIODevice.ReadWrite)
         if self.serial.isOpen():
             self.serial.write(b'\x03') #send ctrl-c
-
-    #future: add reset cuts on blade + rest of info section
 
     def send(self, text):
         self.serial.write(text.encode())
