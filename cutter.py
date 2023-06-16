@@ -52,6 +52,7 @@ class Cutter(QtWidgets.QWidget):
         bladePattern = re.compile("Total cuts using current blade is: ")
         bladePattern2 = re.compile("Total cuts using current blade is : ")
         rollLengthPattern = re.compile("Total tube length cut in CM is   : ")
+        rollLengthPattern2 = re.compile("Total tube length cut in cm is    : ")
         readyPattern = re.compile("Please enter tube length to cut in MM")
         while self.serial.canReadLine():
             text = self.serial.readLine().data().decode()
@@ -67,6 +68,8 @@ class Cutter(QtWidgets.QWidget):
                 self.blade.setValue(int(text.split("Total cuts using current blade is : ",1)[1]))
             if rollLengthPattern.match(text):
                 self.rollLength.setValue(int(text.split("Total tube length cut in CM is   : ",1)[1]))
+            if rollLengthPattern2.match(text):
+                self.rollLength.setValue(int(text.split("Total tube length cut in cm is    : ",1)[1]))
             
             if readyPattern.match(text):                                                            #release cut button if ready
                 self.cutButton.setChecked(False)
