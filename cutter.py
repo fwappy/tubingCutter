@@ -5,7 +5,7 @@
 # 14 Jun 2023
 ##################################################
 
-import time
+import time, re
 from PyQt5 import QtCore, QtWidgets, QtSerialPort, uic
 
 class Cutter(QtWidgets.QWidget):
@@ -32,9 +32,6 @@ class Cutter(QtWidgets.QWidget):
         self.send(self.length.text())
         time.sleep(1) #replace with wait till end of message - allow reset button to break
         self.send(self.cuts.text())
-        #wait until read "complete!"
-        self.cutButton.setChecked(False)
-        self.cutButton.setEnabled(True)
 
     @QtCore.pyqtSlot()
     def reset(self):
@@ -52,9 +49,26 @@ class Cutter(QtWidgets.QWidget):
         self.serial.waitForBytesWritten() # blocking
 
     def receive(self):
+        bladePattern = re.compile("Total cuts using current blade is: ")
+        rollLengthPattern = re.compile("Total tube length cut in CM is   : ")
+        readyPattern = re.compile("Please enter tube length to cut in MM")
         while self.serial.canReadLine():
-            self.consoleTextbox.append(self.serial.readLine().data().decode())
-            #parse for string "Total cuts using current blade is : 4; Total tube length cut in cm is    : 100" then uncheck eand enable cutButton + set Info section of UI
+            text = self.serial.readLine().data().decode()
+            self.consoleTextbox.append(text)
+            
+            #reomve when donw
+            #print('blade:' + text.split("Total cuts using current blade is: ",1)[0])
+
+
+            if bladePattern.match(text):
+                self.blade.setValue(int(text.split("Total cuts using current blade is: ",1)[1]))        #set Info section of UI
+            if rollLengthPattern.match(text):
+                self.rollLength.setValue(int(text.split("Total tube length cut in CM is   : ",1)[1]))
+            
+            if readyPattern.match(text):                                                            #release cut button if ready
+                self.cutButton.setChecked(False)
+                self.cutButton.setEnabled(True)
+
 
     def updateTotal(self): #updates the total LCDNumber
         self.total.display(self.length.value() * self.cuts.value())

@@ -286,6 +286,9 @@
    </item>
    <item row="0" column="1">
     <widget class="QPushButton" name="cutButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -296,6 +299,9 @@
       <string>Cut!</string>
      </property>
      <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
       <bool>true</bool>
      </property>
     </widget>
