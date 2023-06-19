@@ -18,6 +18,8 @@ class Cutter(QtWidgets.QWidget):
         self.length.valueChanged.connect(self.updateTotal)
         self.cuts.valueChanged.connect(self.updateTotal)
         self.setButton.clicked.connect(self.setMotorVars)
+        #self.rollLength.mouseDoubleClickEvent(self.rollLength.setValue(0))
+        #self.blade.mouseDoubleClickEvent(self.blade.setValue(0))
         self.serial = QtSerialPort.QSerialPort(         # open serial connection
             '/dev/ttyUSB0',
             baudRate=QtSerialPort.QSerialPort.Baud9600,
