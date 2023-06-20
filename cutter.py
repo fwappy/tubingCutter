@@ -5,13 +5,17 @@
 # 14 Jun 2023
 ##################################################
 
-import time, re
+import time, re, os
 from PyQt5 import QtCore, QtWidgets, QtSerialPort, uic
+
+
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 class Cutter(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(Cutter, self).__init__(parent)            # Call the inherited classes __init__ method
-        uic.loadUi('cutter.ui', self)                   # Load the .ui file
+        uic.loadUi(os.path.join(__location__, 'cutter.ui'), self)                   # Load the .ui file
         self.show()                                     # Show the GUI
         self.cutButton.clicked.connect(self.cut)        # connect buttons
         self.resetButton.clicked.connect(self.reset)
