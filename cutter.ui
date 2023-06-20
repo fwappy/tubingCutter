@@ -100,6 +100,11 @@
      </item>
      <item>
       <widget class="QLabel" name="rollUnits">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>cm</string>
        </property>
@@ -215,6 +220,11 @@
      </item>
      <item>
       <widget class="QLabel" name="lengthUnits">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>mm</string>
        </property>
@@ -328,6 +338,11 @@
      </item>
      <item>
       <widget class="QLabel" name="totalUnits">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>mm</string>
        </property>
