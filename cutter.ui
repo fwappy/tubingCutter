@@ -134,7 +134,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Cuts on Current Blade:</string>
+        <string>Cuts on Blade:</string>
        </property>
        <property name="buddy">
         <cstring>blade</cstring>
