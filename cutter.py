@@ -36,7 +36,7 @@ class Cutter(QtWidgets.QWidget):
     def cut(self):
         self.cutButton.setEnabled(False)
         self.send(self.length.text())
-        time.sleep(1) #replace with wait till end of message - allow reset button to break
+        time.sleep(0.5) #replace with wait till end of message - allow reset button to break
         self.send(self.cuts.text())
 
     @QtCore.pyqtSlot()
@@ -85,8 +85,10 @@ class Cutter(QtWidgets.QWidget):
 
     def setMotorVars(self):
         self.send('R2 = ' + self.rollLength.text())
-        time.sleep(1)
+        time.sleep(0.5)
         self.send('R1 = ' + self.blade.text())
+        time.sleep(0.5)
+        self.send('S')
 
     def showError(self):
         if self.serial.error() != self.serial.NoError:
